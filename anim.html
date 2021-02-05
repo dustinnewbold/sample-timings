@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        header {
+            height: 500px;
+            width: 100vw;
+            background: #333;
+            margin-bottom: 100px;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 850px;
+            margin: 0 auto;
+        }
+
+        .category {
+            width: 191px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 40px;
+            margin-right: 80px;
+            align-items: center;
+
+            opacity: 0;
+            transform: translateY(50px);
+            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+        }
+
+        .picture {
+            width: 140px;
+            height: 140px;
+            background: #999;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            width: 120px;
+            text-align: center;
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category.visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        footer {
+            height: 50vh;
+        }
+
+        form {
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input {
+            margin-bottom: 20px;
+        }
+
+        input[type=number],
+        input[type=text],
+        input[type=submit],
+        select {
+            width: 100px;
+            font-size: 16px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        input[name=curve-custom],
+        select,
+        input[type=submit] {
+            width: 300px;
+        }
+
+        input[name=curve-custom] {
+            margin-bottom: 0;
+        }
+
+        label#opacity {
+            margin-top: 20px;
+        }
+
+        input[type=submit] {
+            margin-top: 20px;
+        }
+
+        input[type=checkbox] {
+            align-self: start;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        @media screen and ( max-width: 700px ) {
+            .categories {
+                width: 90vw;
+            }
+
+            .category {
+                width: 50%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <form>
+            <label>On Scroll</label>
+            <input type="checkbox" name="animateOnScroll" checked />
+
+            <label>Timing (ms)</label>
+            <input type="number" name="timing" value="300">
+
+            <label>Timing Curve</label>
+            <select name="curve" onchange="curveChanged()">
+                <option value="linear">Linear</option>
+                <option value="ease-in-out" selected>Ease In Out</option>
+                <option value="custom">Custom</option>
+            </select>
+            <input type="text" class="hide" name="curve-custom" value="" placeholder="cubic-bezier(.42, 0, .58, 1);" />
+
+            <label id="opacity">Opacity Start (0% - 100%)</label>
+            <input type="number" name="opacity" value="0">
+
+            <label>Y Offset (in pixels)</label>
+            <input type="number" name="yoffset" value="50">
+
+            <input type="submit" />
+        </form>
+    </header>
+
+    <div class="categories">
+        <div class="category">
+            <div class="picture"></div>
+            <div class="label">Appetizers / Small Plates</div>
+        </div>
+        <div class="category">
+            <div class="picture"></div>
+            <div class="label">Soups</div>
+        </div>
+        <div class="category">
+            <div class="picture"></div>
+            <div class="label">Salads</div>
+        </div>
+        <div class="category">
+            <div class="picture"></div>
+            <div class="label">Pastas</div>
+        </div>
+        <div class="category">
+            <div class="picture"></div>
+            <div class="label">Pizzas</div>
+        </div>
+        <div class="category">
+            <div class="picture"></div>
+            <div class="label">CPKids</div>
+        </div>
+    </div>
+
+    <footer></footer>
+    
+    <script>
+        const cat1 = document.getElementById('cat1');
+        const cat2 = document.getElementById('cat2');
+
+        let animOnScroll = false;
+        let timing = 300;
+        let curve = 'ease-in-out';
+        let customCurve = 'ease-in-out';
+        let opacity = 0;
+        let yoffset = 50;
+
+        if ( location.search ) {
+            const params = location.search.substr(1).split('&');
+
+            params.forEach(param => {
+                const split = param.split('=');
+                const key = split[0];
+                const value = split[1];
+                
+                if ( key === 'animateOnScroll' ) {
+                    animOnScroll = value === 'on' ? true : false;
+                } else if ( key === 'timing' ) {
+                    timing = parseInt(value);
+                } else if ( key === 'curve' ) {
+                    curve = value;
+                } else if ( key === 'curve-custom' ) {
+                    customCurve = value;
+                } else if ( key === 'opacity' ) {
+                    opacity = parseInt(value);
+                } else if ( key === 'yoffset' ) {
+                    yoffset = parseInt(value);
+                }
+
+                console.log(key, value);
+            });
+
+            document.querySelector('[name=animateOnScroll]').checked = animOnScroll;
+            document.querySelector('[name=timing]').value = timing;
+            document.querySelector('[name=curve]').value = curve;
+            document.querySelector('[name=curve-custom]').value = customCurve;
+            document.querySelector('[name=opacity]').value = opacity;
+            document.querySelector('[name=yoffset]').value = yoffset;
+        }
+
+        // Timing curve
+        const appliedCurve = curve === 'custom' ? customCurve : curve;
+
+        // Apply transition properties
+        document.querySelectorAll('.category').forEach(cat => cat.style.opacity = `${opacity / 100}`);
+        document.querySelectorAll('.category').forEach(cat => cat.style.transform = `translateY(${yoffset}px)`);
+        document.querySelectorAll('.category').forEach(cat => cat.style.transition = `transform ${timing}ms ${appliedCurve}, opacity ${timing}ms ${appliedCurve}`);
+
+        // Force redraw
+        document.querySelectorAll('.category').forEach(cat => cat.offsetHeight);
+
+        if ( animOnScroll ) {
+            const manage = (entries, observer) => {
+                entries.forEach(entry => {
+                    if ( entry.intersectionRatio || entry.isIntersecting ) {
+                        entry.target.classList.add('visible');
+                    }
+                })
+            }
+            let observer = new IntersectionObserver(manage);
+            document.querySelectorAll('.category').forEach(cat => observer.observe(cat));
+        } else {
+            document.querySelectorAll('.category').forEach(cat => cat.classList.add('visible'));
+        }
+
+        function curveChanged() {
+            const curveEl = document.querySelector('[name=curve]');
+            const customEl = document.querySelector('[name=curve-custom]');
+            if ( curveEl.value === 'custom' ) {
+                customEl.classList.remove('hide');
+            } else {
+                customEl.classList.add('hide');
+            }
+        }
+    </script>
+</body>
+</html>
